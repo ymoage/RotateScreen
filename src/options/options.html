@@ -13,6 +13,19 @@
     </header>
 
     <main class="options-main">
+      <!-- 表示設定 -->
+      <section class="option-section">
+        <h2>表示設定</h2>
+        <div class="option-item">
+          <label for="button-position">ボタンの表示位置</label>
+          <select id="button-position">
+            <option value="overlay">オーバーレイ（動画左上）</option>
+            <option value="controlbar">コントロールバー（YouTube UIに統合）</option>
+          </select>
+          <p class="option-description">回転ボタンの表示場所を選択</p>
+        </div>
+      </section>
+
       <!-- キーボードショートカット -->
       <section class="option-section">
         <h2>キーボードショートカット</h2>
@@ -30,6 +43,13 @@
       <!-- 回転設定 -->
       <section class="option-section">
         <h2>回転設定</h2>
+        <div class="option-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="reset-on-video-change" checked>
+            <span>別の動画に切り替えたときに回転をリセット</span>
+          </label>
+          <p class="option-description">オフにすると回転状態を維持したまま次の動画を再生</p>
+        </div>
         <div class="option-item">
           <label class="checkbox-label">
             <input type="checkbox" id="remember-rotation">

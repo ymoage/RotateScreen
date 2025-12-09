@@ -46,11 +46,19 @@ export const STORAGE_KEYS = {
   VIDEO_ROTATIONS: 'videoRotations'
 };
 
+// ボタン表示位置
+export const BUTTON_POSITIONS = {
+  overlay: 'overlay',       // オーバーレイ（動画左上）
+  controlbar: 'controlbar'  // コントロールバー（YouTube UIに統合）
+};
+
 // デフォルト設定
 export const DEFAULT_SETTINGS = {
   hotkeyPreset: DEFAULT_HOTKEY_PRESET,
   rememberRotation: true,
-  defaultRotation: DEFAULT_ROTATION
+  defaultRotation: DEFAULT_ROTATION,
+  resetOnVideoChange: true,  // 別の動画に切り替えたときに回転をリセット
+  buttonPosition: BUTTON_POSITIONS.overlay  // ボタン表示位置
 };
 
 // メッセージタイプ（Content Script ↔ Background通信）

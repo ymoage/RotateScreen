@@ -5,7 +5,9 @@
 import { MESSAGE_TYPES } from '../utils/constants.js';
 
 // DOM要素
+const buttonPositionSelect = document.getElementById('button-position');
 const hotkeyPresetSelect = document.getElementById('hotkey-preset');
+const resetOnVideoChangeCheckbox = document.getElementById('reset-on-video-change');
 const rememberRotationCheckbox = document.getElementById('remember-rotation');
 const defaultRotationSelect = document.getElementById('default-rotation');
 const clearRotationsBtn = document.getElementById('clear-rotations');
@@ -31,7 +33,9 @@ async function loadSettings() {
     if (response && response.success) {
       const settings = response.data;
 
+      buttonPositionSelect.value = settings.buttonPosition || 'overlay';
       hotkeyPresetSelect.value = settings.hotkeyPreset;
+      resetOnVideoChangeCheckbox.checked = settings.resetOnVideoChange !== false;
       rememberRotationCheckbox.checked = settings.rememberRotation;
       defaultRotationSelect.value = settings.defaultRotation.toString();
     }
@@ -44,9 +48,19 @@ async function loadSettings() {
  * イベントリスナーを設定
  */
 function setupEventListeners() {
+  // ボタン表示位置変更
+  buttonPositionSelect.addEventListener('change', () => {
+    saveSettings({ buttonPosition: buttonPositionSelect.value });
+  });
+
   // ホットキープリセット変更
   hotkeyPresetSelect.addEventListener('change', () => {
     saveSettings({ hotkeyPreset: hotkeyPresetSelect.value });
+  });
+
+  // 動画切り替え時リセット設定変更
+  resetOnVideoChangeCheckbox.addEventListener('change', () => {
+    saveSettings({ resetOnVideoChange: resetOnVideoChangeCheckbox.checked });
   });
 
   // 回転記憶設定変更

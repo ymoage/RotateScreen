@@ -20,13 +20,21 @@
   const YOUTUBE_SELECTORS = {
     player: '#movie_player',
     videoContainer: '.html5-video-container',
-    video: 'video.html5-main-video'
+    video: 'video.html5-main-video',
+    rightControls: '.ytp-right-controls'
+  };
+
+  const BUTTON_POSITIONS = {
+    overlay: 'overlay',
+    controlbar: 'controlbar'
   };
 
   // ================== 状態 ==================
   let currentRotation = DEFAULT_ROTATION;
   let currentHotkeyPreset = HOTKEY_PRESETS.default;
   let rememberRotation = true;
+  let resetOnVideoChange = true;
+  let buttonPosition = BUTTON_POSITIONS.overlay;
   let rotateButton = null;
 
   // ================== ユーティリティ ==================
@@ -156,7 +164,7 @@
     setRotation(DEFAULT_ROTATION);
   }
 
-  // ================== オーバーレイUI ==================
+  // ================== UI ==================
   const ROTATE_ICON_SVG = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
@@ -164,9 +172,9 @@
     </svg>
   `;
 
-  function createRotateButton() {
+  function createRotateButton(isControlbar = false) {
     const button = document.createElement('button');
-    button.className = 'rotate-screen-btn';
+    button.className = isControlbar ? 'ytp-button rotate-screen-controlbar-btn' : 'rotate-screen-btn';
     button.title = '動画を回転 (Rキー)';
     button.innerHTML = ROTATE_ICON_SVG;
     button.setAttribute('data-rotation', '0°');
@@ -192,10 +200,16 @@
     }
   }
 
+  function removeExistingButton() {
+    const existingOverlay = document.querySelector('.rotate-screen-btn');
+    const existingControlbar = document.querySelector('.rotate-screen-controlbar-btn');
+    if (existingOverlay) existingOverlay.remove();
+    if (existingControlbar) existingControlbar.remove();
+    rotateButton = null;
+  }
+
   function injectOverlayUI() {
-    if (document.querySelector('.rotate-screen-btn')) {
-      return true;
-    }
+    removeExistingButton();
 
     const container = detectVideoContainer() || detectPlayer();
     if (!container) {
@@ -208,9 +222,34 @@
       container.style.position = 'relative';
     }
 
-    rotateButton = createRotateButton();
+    rotateButton = createRotateButton(false);
     container.appendChild(rotateButton);
+    updateButtonState(currentRotation);
     return true;
+  }
+
+  function injectControlbarUI() {
+    removeExistingButton();
+
+    const rightControls = document.querySelector(YOUTUBE_SELECTORS.rightControls);
+    if (!rightControls) {
+      console.warn('RotateScreen: Right controls not found, falling back to overlay');
+      return injectOverlayUI();
+    }
+
+    rotateButton = createRotateButton(true);
+    // 右コントロールの最初に挿入（設定ボタンなどの左側）
+    rightControls.insertBefore(rotateButton, rightControls.firstChild);
+    updateButtonState(currentRotation);
+    return true;
+  }
+
+  function injectUI() {
+    if (buttonPosition === BUTTON_POSITIONS.controlbar) {
+      return injectControlbarUI();
+    } else {
+      return injectOverlayUI();
+    }
   }
 
   // ================== キーボードショートカット ==================
@@ -246,6 +285,8 @@
         const settings = result.settings;
         currentHotkeyPreset = HOTKEY_PRESETS[settings.hotkeyPreset] || HOTKEY_PRESETS.default;
         rememberRotation = settings.rememberRotation !== false;
+        resetOnVideoChange = settings.resetOnVideoChange !== false;
+        buttonPosition = settings.buttonPosition || BUTTON_POSITIONS.overlay;
       }
     } catch (error) {
       console.warn('RotateScreen: Failed to load settings', error);
@@ -285,7 +326,7 @@
   }
 
   async function setupRotation() {
-    injectOverlayUI();
+    injectUI();
 
     if (rememberRotation) {
       const videoId = getCurrentVideoId();
@@ -305,7 +346,16 @@
       const currentVideoId = getCurrentVideoId();
       if (currentVideoId && currentVideoId !== lastVideoId) {
         lastVideoId = currentVideoId;
-        currentRotation = DEFAULT_ROTATION;
+
+        // 動画切り替え時に回転をリセット（設定に応じて）
+        if (resetOnVideoChange) {
+          currentRotation = DEFAULT_ROTATION;
+          const video = detectVideo();
+          if (video) {
+            removeRotationClasses(video);
+          }
+        }
+
         setTimeout(async () => {
           const ready = await waitForPlayer(5000);
           if (ready) setupRotation();
