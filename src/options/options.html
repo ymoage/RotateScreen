@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotateScreen - 設定</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <header class="options-header">
+      <h1>RotateScreen 設定</h1>
+    </header>
+
+    <main class="options-main">
+      <!-- キーボードショートカット -->
+      <section class="option-section">
+        <h2>キーボードショートカット</h2>
+        <div class="option-item">
+          <label for="hotkey-preset">ショートカットキー</label>
+          <select id="hotkey-preset">
+            <option value="default">R キー</option>
+            <option value="alt">Alt + R</option>
+            <option value="ctrl">Ctrl + Shift + R</option>
+          </select>
+          <p class="option-description">動画を回転させるキーボードショートカット</p>
+        </div>
+      </section>
+
+      <!-- 回転設定 -->
+      <section class="option-section">
+        <h2>回転設定</h2>
+        <div class="option-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-rotation">
+            <span>動画ごとの回転設定を記憶する</span>
+          </label>
+          <p class="option-description">同じ動画を再度開いたときに前回の回転を自動適用</p>
+        </div>
+        <div class="option-item">
+          <label for="default-rotation">デフォルト回転角度</label>
+          <select id="default-rotation">
+            <option value="0">0° (回転なし)</option>
+            <option value="90">90°</option>
+            <option value="180">180°</option>
+            <option value="270">270°</option>
+          </select>
+          <p class="option-description">新しい動画を開いたときの初期回転角度</p>
+        </div>
+      </section>
+
+      <!-- データ管理 -->
+      <section class="option-section">
+        <h2>データ管理</h2>
+        <div class="option-item">
+          <button id="clear-rotations" class="btn btn-danger">保存された回転設定をクリア</button>
+          <p class="option-description">すべての動画の回転設定を削除します</p>
+        </div>
+      </section>
+
+      <!-- バージョン情報 -->
+      <section class="option-section version-section">
+        <p>RotateScreen v1.0.0</p>
+      </section>
+    </main>
+
+    <!-- 保存通知 -->
+    <div id="save-notification" class="save-notification hidden">
+      設定を保存しました
+    </div>
+  </div>
+
+  <script src="options.js" type="module"></script>
+</body>
+</html>

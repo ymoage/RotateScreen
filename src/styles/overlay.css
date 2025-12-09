@@ -1,0 +1,80 @@
+/**
+ * RotateScreen Overlay Styles
+ * 動画プレイヤー上のオーバーレイボタンスタイル
+ */
+
+/* 回転ボタン */
+.rotate-screen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+/* ホバー時に表示 */
+.html5-video-container:hover .rotate-screen-btn,
+#movie_player:hover .rotate-screen-btn {
+  opacity: 1;
+}
+
+/* ボタンホバー時の背景 */
+.rotate-screen-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ボタンアクティブ時 */
+.rotate-screen-btn:active {
+  transform: scale(0.95);
+}
+
+/* 回転アイコン */
+.rotate-screen-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: white;
+  fill: none;
+}
+
+/* 回転状態表示 */
+.rotate-screen-btn::after {
+  content: attr(data-rotation);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.rotate-screen-btn:hover::after {
+  opacity: 1;
+}
+
+/* 動画回転クラス - transformはJSで直接設定 */
+.rotate-screen-active {
+  transform-origin: center center !important;
+}
+
+/* GPU アクセラレーション */
+.rotate-screen-active {
+  will-change: transform;
+  backface-visibility: hidden;
+}

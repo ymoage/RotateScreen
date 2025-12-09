@@ -1,0 +1,156 @@
+/* RotateScreen Popup Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+}
+
+.popup-container {
+  width: 280px;
+  padding: 16px;
+}
+
+/* Header */
+.popup-header {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.popup-header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+/* Status Section */
+.status-section {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.status-label {
+  color: #666;
+  font-size: 13px;
+}
+
+.status-value {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Controls Section */
+.controls-section {
+  margin-bottom: 16px;
+}
+
+.controls-section h2 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.rotation-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rotation-btn {
+  padding: 10px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.rotation-btn:hover {
+  background: #f0f0f0;
+  border-color: #1a73e8;
+}
+
+.rotation-btn:active {
+  background: #e0e0e0;
+}
+
+.rotation-btn.active {
+  background: #1a73e8;
+  color: #fff;
+  border-color: #1a73e8;
+}
+
+/* Shortcut Section */
+.shortcut-section {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.shortcut-hint {
+  font-size: 12px;
+  color: #666;
+}
+
+.key {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+/* Footer */
+.popup-footer {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.popup-footer a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.popup-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Unsupported Site Message */
+.unsupported-message {
+  text-align: center;
+  padding: 24px 16px;
+  color: #666;
+}
+
+.unsupported-message p {
+  margin-bottom: 8px;
+}
+
+.unsupported-message .site-name {
+  font-weight: 600;
+  color: #333;
+}
