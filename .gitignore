@@ -9,6 +9,7 @@ build/
 # IDE and editor
 .vscode/
 .idea/
+.vs/
 *.swp
 *.swo
 *~
