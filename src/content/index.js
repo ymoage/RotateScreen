@@ -99,6 +99,13 @@
   }
 
   // ================== 回転制御 ==================
+  const ROTATION_CLASSES = ['rotate-screen-90', 'rotate-screen-180', 'rotate-screen-270'];
+
+  function removeRotationClasses(video) {
+    video.classList.remove('rotate-screen-active', ...ROTATION_CLASSES);
+    video.style.removeProperty('--rotate-screen-scale');
+  }
+
   function setRotation(rotation) {
     if (!isValidRotation(rotation)) {
       console.error('RotateScreen: Invalid rotation angle:', rotation);
@@ -111,29 +118,27 @@
       return false;
     }
 
-    // 回転を適用
+    // 既存の回転クラスを削除
+    removeRotationClasses(video);
+
+    // 回転を適用（CSSクラスを使用）
     if (rotation === 0) {
-      video.classList.remove('rotate-screen-active');
-      video.style.transform = '';
+      // 0度は何もしない
     } else if (rotation === 180) {
-      video.classList.add('rotate-screen-active');
-      video.style.transform = 'rotate(180deg)';
+      video.classList.add('rotate-screen-active', 'rotate-screen-180');
     } else if (rotation === 90 || rotation === 270) {
-      video.classList.add('rotate-screen-active');
-      // 動画要素自体のサイズを使用
+      // スケール計算
       const videoWidth = video.offsetWidth || video.clientWidth || video.getBoundingClientRect().width;
       const videoHeight = video.offsetHeight || video.clientHeight || video.getBoundingClientRect().height;
 
-
-      let scale = 1;
+      let scale = 0.5625; // デフォルト: 16:9
       if (videoWidth > 0 && videoHeight > 0) {
         scale = videoHeight / videoWidth;
-      } else {
-        // フォールバック: 16:9の場合 9/16 = 0.5625
-        scale = 0.5625;
       }
 
-      video.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      // CSS変数でスケールを設定
+      video.style.setProperty('--rotate-screen-scale', scale);
+      video.classList.add('rotate-screen-active', `rotate-screen-${rotation}`);
     }
 
     currentRotation = rotation;

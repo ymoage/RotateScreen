@@ -68,13 +68,27 @@
   opacity: 1;
 }
 
-/* 動画回転クラス - transformはJSで直接設定 */
+/* 動画回転クラス */
 .rotate-screen-active {
+  transform-origin: center center !important;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* 90度回転 */
+.rotate-screen-90 {
+  transform: rotate(90deg) scale(var(--rotate-screen-scale, 0.5625)) !important;
   transform-origin: center center !important;
 }
 
-/* GPU アクセラレーション */
-.rotate-screen-active {
-  will-change: transform;
-  backface-visibility: hidden;
+/* 180度回転 */
+.rotate-screen-180 {
+  transform: rotate(180deg) !important;
+  transform-origin: center center !important;
+}
+
+/* 270度回転 */
+.rotate-screen-270 {
+  transform: rotate(270deg) scale(var(--rotate-screen-scale, 0.5625)) !important;
+  transform-origin: center center !important;
 }
