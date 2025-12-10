@@ -7,6 +7,7 @@ import { MESSAGE_TYPES } from '../utils/constants.js';
 // DOM要素
 const buttonPositionSelect = document.getElementById('button-position');
 const hotkeyPresetSelect = document.getElementById('hotkey-preset');
+const autoDetectRotationCheckbox = document.getElementById('auto-detect-rotation');
 const resetOnVideoChangeCheckbox = document.getElementById('reset-on-video-change');
 const rememberRotationCheckbox = document.getElementById('remember-rotation');
 const defaultRotationSelect = document.getElementById('default-rotation');
@@ -35,6 +36,7 @@ async function loadSettings() {
 
       buttonPositionSelect.value = settings.buttonPosition || 'overlay';
       hotkeyPresetSelect.value = settings.hotkeyPreset;
+      autoDetectRotationCheckbox.checked = settings.autoDetectRotation !== false;
       resetOnVideoChangeCheckbox.checked = settings.resetOnVideoChange !== false;
       rememberRotationCheckbox.checked = settings.rememberRotation;
       defaultRotationSelect.value = settings.defaultRotation.toString();
@@ -56,6 +58,11 @@ function setupEventListeners() {
   // ホットキープリセット変更
   hotkeyPresetSelect.addEventListener('change', () => {
     saveSettings({ hotkeyPreset: hotkeyPresetSelect.value });
+  });
+
+  // 自動回転検出設定変更
+  autoDetectRotationCheckbox.addEventListener('change', () => {
+    saveSettings({ autoDetectRotation: autoDetectRotationCheckbox.checked });
   });
 
   // 動画切り替え時リセット設定変更

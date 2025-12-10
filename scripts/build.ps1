@@ -13,7 +13,7 @@ $DIST_DIR = Join-Path $ROOT_DIR "dist"
 
 # package.jsonからバージョンを取得
 $packageJsonPath = Join-Path $ROOT_DIR "package.json"
-$packageJson = Get-Content $packageJsonPath | ConvertFrom-Json
+$packageJson = Get-Content $packageJsonPath -Encoding UTF8 | ConvertFrom-Json
 $VERSION = $packageJson.version
 
 # コピーするファイル/フォルダ

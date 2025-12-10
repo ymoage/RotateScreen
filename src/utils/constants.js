@@ -58,7 +58,8 @@ export const DEFAULT_SETTINGS = {
   rememberRotation: true,
   defaultRotation: DEFAULT_ROTATION,
   resetOnVideoChange: true,  // 別の動画に切り替えたときに回転をリセット
-  buttonPosition: BUTTON_POSITIONS.overlay  // ボタン表示位置
+  buttonPosition: BUTTON_POSITIONS.overlay,  // ボタン表示位置
+  autoDetectRotation: false  // 顔検出による自動回転（実験機能、デフォルトOFF）
 };
 
 // メッセージタイプ（Content Script ↔ Background通信）

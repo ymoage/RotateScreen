@@ -1,7 +1,7 @@
 {
   "name": "rotate-screen",
-  "version": "1.0.0",
-  "description": "YouTube動画を任意の角度に回転表示するChrome拡張機能",
+  "version": "1.2.0",
+  "description": "YouTube動画を任意の角度に回転表示するChrome拡張機能（顔検出による自動回転対応）",
   "scripts": {
     "build": "node scripts/build.js",
     "package": "node scripts/build.js --zip"

@@ -45,6 +45,13 @@
         <h2>回転設定</h2>
         <div class="option-item">
           <label class="checkbox-label">
+            <input type="checkbox" id="auto-detect-rotation">
+            <span>顔検出による自動回転を有効にする（実験機能）</span>
+          </label>
+          <p class="option-description">動画内の顔を検出して自動的に正しい向きに回転します。検出精度は限定的です。ライブ配信では無効になります。</p>
+        </div>
+        <div class="option-item">
+          <label class="checkbox-label">
             <input type="checkbox" id="reset-on-video-change" checked>
             <span>別の動画に切り替えたときに回転をリセット</span>
           </label>
@@ -80,7 +87,7 @@
 
       <!-- バージョン情報 -->
       <section class="option-section version-section">
-        <p>RotateScreen v1.0.0</p>
+        <p>RotateScreen v1.2.0</p>
       </section>
     </main>
 

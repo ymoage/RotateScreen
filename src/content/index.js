@@ -35,7 +35,9 @@
   let rememberRotation = true;
   let resetOnVideoChange = true;
   let buttonPosition = BUTTON_POSITIONS.overlay;
+  let autoDetectRotation = false; // 自動回転検出（実験機能、デフォルトOFF）
   let rotateButton = null;
+  let autoDetectionDone = false; // 現在の動画で自動検出済みか
 
   // ================== ユーティリティ ==================
   function isValidRotation(rotation) {
@@ -62,6 +64,41 @@
 
   function isYouTube() {
     return /^https?:\/\/(www\.)?youtube\.com/.test(window.location.href);
+  }
+
+  /**
+   * ライブ配信かどうかを判定
+   * @returns {boolean}
+   */
+  function isLiveStream() {
+    // URLに /live/ が含まれる
+    if (window.location.pathname.includes('/live/')) {
+      return true;
+    }
+
+    // ライブバッジの存在をチェック
+    const liveBadge = document.querySelector('.ytp-live-badge');
+    if (liveBadge) {
+      // display: none でなければライブ
+      const style = window.getComputedStyle(liveBadge);
+      if (style.display !== 'none') {
+        return true;
+      }
+    }
+
+    // プレイヤーのクラスにliveが含まれる
+    const player = detectPlayer();
+    if (player && player.classList.contains('ytp-live')) {
+      return true;
+    }
+
+    // ライブチャットの存在をチェック
+    const liveChat = document.querySelector('ytd-live-chat-frame');
+    if (liveChat) {
+      return true;
+    }
+
+    return false;
   }
 
   // ================== プレイヤー検出 ==================
@@ -287,6 +324,7 @@
         rememberRotation = settings.rememberRotation !== false;
         resetOnVideoChange = settings.resetOnVideoChange !== false;
         buttonPosition = settings.buttonPosition || BUTTON_POSITIONS.overlay;
+        autoDetectRotation = settings.autoDetectRotation !== false;
       }
     } catch (error) {
       console.warn('RotateScreen: Failed to load settings', error);
@@ -316,6 +354,105 @@
     }
   }
 
+  // ================== 自動回転検出 ==================
+  /**
+   * 顔検出による自動回転
+   * @param {HTMLVideoElement} video
+   * @returns {Promise<boolean>} 自動回転が適用されたか
+   */
+  async function tryAutoRotation(video) {
+    if (!autoDetectRotation || autoDetectionDone) {
+      return false;
+    }
+
+    // ライブ配信では自動回転をスキップ
+    if (isLiveStream()) {
+      console.log('RotateScreen: Skipping auto-rotation for live stream');
+      autoDetectionDone = true;
+      return false;
+    }
+
+    // FaceDetectorモジュールが読み込まれているかチェック
+    if (!window.RotateScreenFaceDetector) {
+      console.log('RotateScreen: Face detector module not loaded');
+      return false;
+    }
+
+    try {
+      const detector = window.RotateScreenFaceDetector;
+
+      // 動画のメタデータが読み込まれるのを待つ
+      if (video.readyState < 2) {
+        await new Promise((resolve) => {
+          const onLoaded = () => {
+            video.removeEventListener('loadeddata', onLoaded);
+            resolve();
+          };
+          video.addEventListener('loadeddata', onLoaded);
+          // タイムアウト
+          setTimeout(resolve, 3000);
+        });
+      }
+
+      // 少し再生してからフレームを取得（最初のフレームは黒い場合がある）
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      console.log('RotateScreen: Attempting auto rotation detection...');
+      const result = await detector.detectVideoOrientation(video);
+
+      autoDetectionDone = true;
+
+      if (result.detected && result.rotation !== null && result.rotation !== 0) {
+        console.log(`RotateScreen: Auto-detected rotation: ${result.rotation}° (method: ${result.method})`);
+        setRotation(result.rotation);
+
+        // 自動検出結果も保存
+        const videoId = getCurrentVideoId();
+        if (videoId && rememberRotation) {
+          saveVideoRotation(videoId, result.rotation);
+        }
+
+        showAutoRotationNotification(result.rotation, result.method);
+        return true;
+      } else {
+        console.log('RotateScreen: No rotation needed or detection failed');
+      }
+    } catch (error) {
+      console.warn('RotateScreen: Auto rotation detection error', error);
+    }
+
+    return false;
+  }
+
+  /**
+   * 自動回転通知を表示
+   * @param {number} rotation
+   * @param {string} method
+   */
+  function showAutoRotationNotification(rotation, method) {
+    // 既存の通知を削除
+    const existing = document.querySelector('.rotate-screen-notification');
+    if (existing) existing.remove();
+
+    const notification = document.createElement('div');
+    notification.className = 'rotate-screen-notification';
+    notification.innerHTML = `
+      <span>自動回転: ${rotation}°</span>
+      <span class="rotate-screen-notification-hint">Rキーで調整可能</span>
+    `;
+
+    const player = detectPlayer();
+    if (player) {
+      player.appendChild(notification);
+
+      // 3秒後に非表示
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  }
+
   // ================== メインロジック ==================
   function handleRotate() {
     const newRotation = rotateNext();
@@ -328,14 +465,22 @@
   async function setupRotation() {
     injectUI();
 
-    if (rememberRotation) {
-      const videoId = getCurrentVideoId();
-      if (videoId) {
-        const savedRotation = await loadVideoRotation(videoId);
-        if (savedRotation !== null) {
-          setRotation(savedRotation);
-        }
+    const videoId = getCurrentVideoId();
+    const video = detectVideo();
+
+    // 1. まず保存済みの回転をチェック
+    if (rememberRotation && videoId) {
+      const savedRotation = await loadVideoRotation(videoId);
+      if (savedRotation !== null) {
+        setRotation(savedRotation);
+        autoDetectionDone = true; // 保存済みなら自動検出はスキップ
+        return;
       }
+    }
+
+    // 2. 保存がなければ自動検出を試行
+    if (video && autoDetectRotation) {
+      await tryAutoRotation(video);
     }
   }
 
@@ -346,6 +491,9 @@
       const currentVideoId = getCurrentVideoId();
       if (currentVideoId && currentVideoId !== lastVideoId) {
         lastVideoId = currentVideoId;
+
+        // 動画切り替え時に自動検出フラグをリセット
+        autoDetectionDone = false;
 
         // 動画切り替え時に回転をリセット（設定に応じて）
         if (resetOnVideoChange) {
