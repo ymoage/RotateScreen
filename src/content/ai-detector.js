@@ -365,7 +365,7 @@ Output only: 0, 90, 180, or 270`;
         endpoint = endpoint.replace(/\/$/, '') + '/detect-orientation';
       }
 
-      console.log('RotateScreen AI: Sending request to', endpoint);
+      console.log('RotateScreen AI: Sending request to', endpoint, 'model:', geminiModel);
 
       const response = await fetchWithTimeout(
         endpoint,
@@ -373,7 +373,8 @@ Output only: 0, 90, 180, or 270`;
           method: 'POST',
           headers,
           body: JSON.stringify({
-            image: imageData
+            image: imageData,
+            model: geminiModel
           })
         },
         timeout

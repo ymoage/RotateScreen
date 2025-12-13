@@ -4,9 +4,13 @@
  *
  * 環境変数（Cloudflare Dashboardで設定）:
  * - GEMINI_API_KEY: Gemini APIキー（必須）
+ * - GEMINI_MODEL: 使用するモデル（オプション、デフォルト: gemini-2.0-flash）
  * - ACCESS_TOKEN: アクセストークン（オプション、設定すると認証が有効になる）
  * - ALLOWED_ORIGINS: 許可するオリジン（カンマ区切り、オプション）
  */
+
+// デフォルトモデル
+const DEFAULT_MODEL = 'gemini-2.0-flash';
 
 // 向き判定用プロンプト
 const ORIENTATION_PROMPT = `Image orientation check. Output ONLY a number.
@@ -110,9 +114,10 @@ function errorResponse(message, status, origin, env) {
  * Gemini APIで画像の向きを判定
  * @param {string} imageData - Base64エンコードされた画像データ
  * @param {string} apiKey - Gemini APIキー
+ * @param {string} model - 使用するモデル名
  * @returns {Promise<object>} 判定結果
  */
-async function detectOrientation(imageData, apiKey) {
+async function detectOrientation(imageData, apiKey, model) {
   // data:image/jpeg;base64, プレフィックスを除去
   const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
 
@@ -121,9 +126,9 @@ async function detectOrientation(imageData, apiKey) {
   const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
 
   // Gemini API リクエスト
-  // gemini-2.5-flash: 最新モデル
+  console.log('Using model:', model);
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: {
@@ -312,8 +317,11 @@ export default {
       }
 
       try {
+        // モデルを決定（優先順位: リクエスト > 環境変数 > デフォルト）
+        const model = body.model || env.GEMINI_MODEL || DEFAULT_MODEL;
+
         // Gemini APIで判定
-        const result = await detectOrientation(body.image, env.GEMINI_API_KEY);
+        const result = await detectOrientation(body.image, env.GEMINI_API_KEY, model);
 
         const headers = new Headers({ 'Content-Type': 'application/json' });
         setCorsHeaders(headers, origin, env.ALLOWED_ORIGINS);
