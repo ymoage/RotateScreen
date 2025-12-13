@@ -81,6 +81,49 @@ body {
   box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
 }
 
+.option-item input[type="text"],
+.option-item input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.option-item input[type="text"]:focus,
+.option-item input[type="password"]:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.option-item input[type="text"]::placeholder,
+.option-item input[type="password"]::placeholder {
+  color: #999;
+}
+
+/* サブセクションタイトル */
+.option-subsection-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* AI手動実行の説明 */
+.ai-manual-hint {
+  background: #f0f7ff;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border-left: 3px solid #1a73e8;
+  margin-bottom: 12px;
+}
+
+.ai-manual-hint strong {
+  color: #1a73e8;
+}
+
 .option-description {
   font-size: 12px;
   color: #666;
@@ -100,6 +143,103 @@ body {
   width: 18px;
   height: 18px;
   cursor: pointer;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+  border-color: #1a73e8;
+  background: #f8f9fa;
+}
+
+.radio-label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"]:checked + span {
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+/* AI Settings Show/Hide */
+.ai-direct-settings,
+.ai-worker-settings {
+  display: none;
+}
+
+.ai-direct-settings.active,
+.ai-worker-settings.active {
+  display: block;
+}
+
+/* Model Select Container */
+.model-select-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.model-select-container select {
+  flex: 1;
+}
+
+.btn-small {
+  padding: 8px 12px;
+  font-size: 14px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-small:hover {
+  background: #e9ecef;
+  border-color: #1a73e8;
+}
+
+.btn-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-small.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Link in description */
+.option-description a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.option-description a:hover {
+  text-decoration: underline;
 }
 
 /* Buttons */

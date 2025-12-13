@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "RotateScreen",
-  "version": "1.2.0",
-  "description": "YouTube動画を任意の角度に回転表示するブラウザ拡張機能（顔検出による自動回転対応）",
+  "version": "1.3.0",
+  "description": "YouTube動画を任意の角度に回転表示するブラウザ拡張機能（顔検出・AI判定による自動回転対応）",
   "permissions": [
     "storage",
     "activeTab"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "https://generativelanguage.googleapis.com/*"
   ],
   "background": {
     "service_worker": "background/service-worker.js",
@@ -17,7 +18,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content/face-detector.js", "content/index.js"],
+      "js": ["content/ai-detector.js", "content/face-detector.js", "content/index.js"],
       "css": ["styles/overlay.css"],
       "run_at": "document_idle"
     }

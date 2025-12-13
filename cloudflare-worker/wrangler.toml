@@ -1,0 +1,16 @@
+name = "rotate-screen-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# 本番環境用の設定
+# [vars]
+# ALLOWED_ORIGINS = "chrome-extension://*,https://www.youtube.com"
+
+# KVストレージ（レート制限用、オプション）
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_KV"
+# id = "your-kv-namespace-id"
+
+# 秘密の環境変数はCloudflare Dashboardで設定してください:
+# - GEMINI_API_KEY: Gemini APIキー（必須）
+# - ACCESS_TOKEN: アクセストークン（オプション）

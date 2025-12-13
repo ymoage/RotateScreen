@@ -46,9 +46,63 @@
         <div class="option-item">
           <label class="checkbox-label">
             <input type="checkbox" id="auto-detect-rotation">
-            <span>顔検出による自動回転を有効にする（実験機能）</span>
+            <span>自動回転検出を有効にする（実験機能）</span>
           </label>
-          <p class="option-description">動画内の顔を検出して自動的に正しい向きに回転します。検出精度は限定的です。ライブ配信では無効になります。</p>
+          <p class="option-description">顔検出により動画の向きを自動判定します。ライブ配信では無効になります。</p>
+        </div>
+
+        <!-- AI判定設定（手動実行用） -->
+        <div class="option-item ai-settings-section">
+          <h3 class="option-subsection-title">AI判定設定</h3>
+          <p class="option-description ai-manual-hint">
+            <strong>使い方:</strong> 回転ボタンを<strong>長押し</strong>または<strong>右クリック</strong>でAI判定を実行できます。
+          </p>
+        </div>
+
+        <!-- AI接続方式選択 -->
+        <div class="option-item ai-settings-item">
+          <label>接続方式</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="ai-mode" id="ai-mode-direct" value="direct">
+              <span>Gemini API直接（簡単）</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="ai-mode" id="ai-mode-worker" value="worker">
+              <span>Cloudflare Worker経由（上級者向け）</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 直接方式の設定 -->
+        <div class="option-item ai-settings-item ai-direct-settings">
+          <label for="ai-gemini-api-key">Gemini APIキー</label>
+          <input type="password" id="ai-gemini-api-key" placeholder="AIza...">
+          <p class="option-description">
+            <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a>でAPIキーを取得してください。
+          </p>
+        </div>
+        <div class="option-item ai-settings-item ai-direct-settings">
+          <label for="ai-gemini-model">使用モデル</label>
+          <div class="model-select-container">
+            <select id="ai-gemini-model">
+              <option value="gemini-2.0-flash">gemini-2.0-flash（デフォルト）</option>
+            </select>
+            <button type="button" id="refresh-models" class="btn btn-small" title="モデル一覧を更新">🔄</button>
+          </div>
+          <p class="option-description" id="model-status">APIキーを入力後、🔄ボタンで利用可能なモデルを取得できます。</p>
+        </div>
+
+        <!-- Worker方式の設定 -->
+        <div class="option-item ai-settings-item ai-worker-settings">
+          <label for="ai-api-endpoint">APIエンドポイント</label>
+          <input type="text" id="ai-api-endpoint" placeholder="https://your-worker.workers.dev/">
+          <p class="option-description">Cloudflare WorkerのURLを設定してください。</p>
+        </div>
+        <div class="option-item ai-settings-item ai-worker-settings">
+          <label for="ai-access-token">アクセストークン（任意）</label>
+          <input type="password" id="ai-access-token" placeholder="オプション">
+          <p class="option-description">Workerにアクセストークンを設定している場合に入力。</p>
         </div>
         <div class="option-item">
           <label class="checkbox-label">
@@ -87,7 +141,7 @@
 
       <!-- バージョン情報 -->
       <section class="option-section version-section">
-        <p>RotateScreen v1.2.0</p>
+        <p>RotateScreen v1.3.0</p>
       </section>
     </main>
 
