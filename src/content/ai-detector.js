@@ -279,7 +279,7 @@ Output only: 0, 90, 180, or 270`;
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('RotateScreen AI: Error response body:', errorText);
+        console.warn('RotateScreen AI: API response error:', response.status, errorText);
         throw new Error(`Gemini API error: ${response.status}`);
       }
 
@@ -331,7 +331,7 @@ Output only: 0, 90, 180, or 270`;
         method: 'ai-direct'
       };
     } catch (error) {
-      console.error('RotateScreen AI: Direct detection failed:', error);
+      console.warn('RotateScreen AI: Direct detection failed:', error.message);
       return {
         detected: false,
         rotation: null,
@@ -384,7 +384,7 @@ Output only: 0, 90, 180, or 270`;
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('RotateScreen AI: Error response body:', errorText);
+        console.warn('RotateScreen AI: Worker API error:', response.status, errorText);
         throw new Error(`API error: ${response.status} - ${errorText}`);
       }
 
@@ -407,13 +407,7 @@ Output only: 0, 90, 180, or 270`;
         method: 'ai'
       };
     } catch (error) {
-      console.error('RotateScreen AI: Detection failed:', error);
-      console.error('RotateScreen AI: Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        apiEndpoint: apiEndpoint
-      });
+      console.warn('RotateScreen AI: Worker detection failed:', error.message);
       return {
         detected: false,
         rotation: null,

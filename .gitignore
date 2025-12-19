@@ -43,3 +43,9 @@ coverage/
 
 # Claude settings
 .claude/
+
+# すべてのドットファイルを除外
+.*
+
+# ただし .gitignore は除外しない
+!.gitignore

@@ -52,6 +52,16 @@ export const BUTTON_POSITIONS = {
   controlbar: 'controlbar'  // コントロールバー（YouTube UIに統合）
 };
 
+// 自動回転検出方法
+export const DETECTION_METHODS = {
+  none: 'none',             // 自動検出なし
+  face: 'face',             // 顔検出（ローカル処理）
+  ai: 'ai'                  // AI判定（Gemini API経由）
+};
+
+// AI判定タイムアウト（ミリ秒）
+export const AI_DETECTION_TIMEOUT = 10000;  // 10秒
+
 // デフォルト設定
 export const DEFAULT_SETTINGS = {
   hotkeyPreset: DEFAULT_HOTKEY_PRESET,
@@ -59,7 +69,8 @@ export const DEFAULT_SETTINGS = {
   defaultRotation: DEFAULT_ROTATION,
   resetOnVideoChange: true,  // 別の動画に切り替えたときに回転をリセット
   buttonPosition: BUTTON_POSITIONS.overlay,  // ボタン表示位置
-  autoDetectRotation: false  // 顔検出による自動回転（実験機能、デフォルトOFF）
+  autoDetectRotation: false,  // 自動回転を有効にするか（実験機能、デフォルトOFF）
+  detectionMethod: DETECTION_METHODS.face  // 検出方法（face: 顔検出, ai: AI判定）
 };
 
 // メッセージタイプ（Content Script ↔ Background通信）
