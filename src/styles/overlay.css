@@ -148,6 +148,38 @@
   transform-origin: center center !important;
 }
 
+/* ================== ミラー（左右反転） ================== */
+/* ミラーは回転と組み合わせ可能 */
+.rotate-screen-mirror {
+  --rotate-screen-mirror: -1;
+}
+
+/* 回転なし + ミラー */
+.rotate-screen-mirror:not(.rotate-screen-90):not(.rotate-screen-180):not(.rotate-screen-270):not(.rotate-screen-free) {
+  transform: scaleX(-1) !important;
+  transform-origin: center center !important;
+}
+
+/* 90度回転 + ミラー */
+.rotate-screen-90.rotate-screen-mirror {
+  transform: rotate(90deg) scale(var(--rotate-screen-scale, 0.5625)) scaleX(-1) !important;
+}
+
+/* 180度回転 + ミラー */
+.rotate-screen-180.rotate-screen-mirror {
+  transform: rotate(180deg) scaleX(-1) !important;
+}
+
+/* 270度回転 + ミラー */
+.rotate-screen-270.rotate-screen-mirror {
+  transform: rotate(270deg) scale(var(--rotate-screen-scale, 0.5625)) scaleX(-1) !important;
+}
+
+/* フリー回転 + ミラー */
+.rotate-screen-free.rotate-screen-mirror {
+  transform: rotate(var(--rotate-screen-free-angle, 0deg)) scale(var(--rotate-screen-free-scale, 1)) scaleX(-1) !important;
+}
+
 /* ================== フリー回転インジケータ ================== */
 .rotate-screen-free-indicator {
   position: absolute;

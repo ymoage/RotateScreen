@@ -30,13 +30,23 @@
       <section class="option-section">
         <h2>キーボードショートカット</h2>
         <div class="option-item">
-          <label for="hotkey-preset">ショートカットキー</label>
+          <label for="hotkey-preset">回転ショートカット</label>
           <select id="hotkey-preset">
             <option value="default">R キー</option>
             <option value="alt">Alt + R</option>
             <option value="ctrl">Ctrl + Shift + R</option>
           </select>
           <p class="option-description">動画を回転させるキーボードショートカット</p>
+        </div>
+        <div class="option-item">
+          <label for="mirror-hotkey-preset">左右反転ショートカット</label>
+          <select id="mirror-hotkey-preset">
+            <option value="default">H キー</option>
+            <option value="alt">Alt + H</option>
+            <option value="ctrl">Ctrl + Shift + H</option>
+            <option value="disabled">無効</option>
+          </select>
+          <p class="option-description">動画を左右反転（ミラー）させるキーボードショートカット</p>
         </div>
       </section>
 
@@ -141,7 +151,7 @@
 
       <!-- バージョン情報 -->
       <section class="option-section version-section">
-        <p>RotateScreen v1.3.2</p>
+        <p>RotateScreen v1.3.3</p>
       </section>
     </main>
 

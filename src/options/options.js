@@ -7,6 +7,7 @@ import { MESSAGE_TYPES } from '../utils/constants.js';
 // DOM要素
 const buttonPositionSelect = document.getElementById('button-position');
 const hotkeyPresetSelect = document.getElementById('hotkey-preset');
+const mirrorHotkeyPresetSelect = document.getElementById('mirror-hotkey-preset');
 const autoDetectRotationCheckbox = document.getElementById('auto-detect-rotation');
 // AI設定
 const aiModeDirectRadio = document.getElementById('ai-mode-direct');
@@ -51,6 +52,7 @@ async function loadSettings() {
 
       buttonPositionSelect.value = settings.buttonPosition || 'overlay';
       hotkeyPresetSelect.value = settings.hotkeyPreset;
+      mirrorHotkeyPresetSelect.value = settings.mirrorHotkeyPreset || 'default';
       autoDetectRotationCheckbox.checked = settings.autoDetectRotation === true;
 
       // AI設定
@@ -108,6 +110,11 @@ function setupEventListeners() {
   // ホットキープリセット変更
   hotkeyPresetSelect.addEventListener('change', () => {
     saveSettings({ hotkeyPreset: hotkeyPresetSelect.value });
+  });
+
+  // ミラーホットキープリセット変更
+  mirrorHotkeyPresetSelect.addEventListener('change', () => {
+    saveSettings({ mirrorHotkeyPreset: mirrorHotkeyPresetSelect.value });
   });
 
   // 自動回転検出設定変更

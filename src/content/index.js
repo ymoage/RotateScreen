@@ -17,6 +17,14 @@
     ctrl: { key: 'r', ctrl: true, alt: false, shift: true }
   };
 
+  // ミラー（左右反転）用ホットキープリセット
+  const MIRROR_HOTKEY_PRESETS = {
+    default: { key: 'h', ctrl: false, alt: false, shift: false },
+    alt: { key: 'h', ctrl: false, alt: true, shift: false },
+    ctrl: { key: 'h', ctrl: true, alt: false, shift: true },
+    disabled: { key: null, ctrl: false, alt: false, shift: false }
+  };
+
   const YOUTUBE_SELECTORS = {
     player: '#movie_player',
     videoContainer: '.html5-video-container',
@@ -47,7 +55,9 @@
   let currentRotation = DEFAULT_ROTATION;
   let currentFreeRotation = 0; // フリー回転の現在角度
   let isFreeRotationMode = false; // フリー回転モードかどうか
+  let isMirrored = false; // ミラー（左右反転）状態
   let currentHotkeyPreset = HOTKEY_PRESETS.default;
+  let currentMirrorHotkeyPreset = MIRROR_HOTKEY_PRESETS.default;
   let rememberRotation = true;
   let resetOnVideoChange = true;
   let buttonPosition = BUTTON_POSITIONS.overlay;
@@ -162,12 +172,14 @@
 
   // ================== 回転制御 ==================
   const ROTATION_CLASSES = ['rotate-screen-90', 'rotate-screen-180', 'rotate-screen-270', 'rotate-screen-free'];
+  const MIRROR_CLASS = 'rotate-screen-mirror';
 
   function removeRotationClasses(video) {
     video.classList.remove('rotate-screen-active', ...ROTATION_CLASSES);
     video.style.removeProperty('--rotate-screen-scale');
     video.style.removeProperty('--rotate-screen-free-angle');
     video.style.removeProperty('--rotate-screen-free-scale');
+    // ミラークラスは残す（回転とミラーは独立）
   }
 
   function setRotation(rotation) {
@@ -221,6 +233,8 @@
     // フリー回転もリセット
     currentFreeRotation = 0;
     isFreeRotationMode = false;
+    // ミラーもリセット
+    setMirror(false);
   }
 
   // ================== フリー回転 ==================
@@ -284,6 +298,39 @@
     isFreeRotationMode = false;
   }
 
+  // ================== ミラー（左右反転） ==================
+  /**
+   * ミラー状態を設定
+   * @param {boolean} mirrored - ミラー状態
+   */
+  function setMirror(mirrored) {
+    const video = detectVideo();
+    if (!video) {
+      console.warn('RotateScreen: Video element not found');
+      return false;
+    }
+
+    if (mirrored) {
+      video.classList.add(MIRROR_CLASS);
+    } else {
+      video.classList.remove(MIRROR_CLASS);
+    }
+
+    isMirrored = mirrored;
+    updateButtonState(isFreeRotationMode ? currentFreeRotation : currentRotation);
+    return true;
+  }
+
+  /**
+   * ミラー状態をトグル
+   */
+  function toggleMirror() {
+    const newState = !isMirrored;
+    setMirror(newState);
+    showNotification(newState ? '左右反転: ON' : '左右反転: OFF', 'info');
+    return newState;
+  }
+
   // ================== UI ==================
   const ROTATE_ICON_SVG = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -310,7 +357,7 @@
   function createRotateButton(isControlbar = false) {
     const button = document.createElement('button');
     button.className = isControlbar ? 'ytp-button rotate-screen-controlbar-btn' : 'rotate-screen-btn';
-    button.title = '動画を回転 (Rキー)\n長押し: フリー回転\n右クリック: AI判定';
+    button.title = '動画を回転 (Rキー)\n長押し: フリー回転\n右クリック: AI判定\nHキー: 左右反転';
     button.innerHTML = ROTATE_ICON_SVG;
     button.setAttribute('data-rotation', '0°');
 
@@ -544,10 +591,20 @@
   function handleKeyDown(event) {
     if (isInputFocused(event.target)) return;
 
+    // 回転ショートカット
     if (matchesHotkey(event, currentHotkeyPreset)) {
       event.preventDefault();
       event.stopPropagation();
       handleRotate();
+      return;
+    }
+
+    // ミラーショートカット（無効でなければ）
+    if (currentMirrorHotkeyPreset.key !== null && matchesHotkey(event, currentMirrorHotkeyPreset)) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleMirror();
+      return;
     }
   }
 
@@ -559,6 +616,7 @@
       if (result.settings) {
         const settings = result.settings;
         currentHotkeyPreset = HOTKEY_PRESETS[settings.hotkeyPreset] || HOTKEY_PRESETS.default;
+        currentMirrorHotkeyPreset = MIRROR_HOTKEY_PRESETS[settings.mirrorHotkeyPreset] || MIRROR_HOTKEY_PRESETS.default;
         rememberRotation = settings.rememberRotation !== false;
         resetOnVideoChange = settings.resetOnVideoChange !== false;
         buttonPosition = settings.buttonPosition || BUTTON_POSITIONS.overlay;
@@ -566,7 +624,8 @@
         detectionMethod = settings.detectionMethod || DETECTION_METHODS.face;
         console.log('RotateScreen: Applied settings', {
           autoDetectRotation,
-          detectionMethod
+          detectionMethod,
+          mirrorHotkeyPreset: settings.mirrorHotkeyPreset
         });
       }
     } catch (error) {
@@ -948,9 +1007,11 @@
           currentRotation = DEFAULT_ROTATION;
           currentFreeRotation = 0;
           isFreeRotationMode = false;
+          isMirrored = false;
           const video = detectVideo();
           if (video) {
             removeRotationClasses(video);
+            video.classList.remove(MIRROR_CLASS);
           }
         }
 
@@ -975,6 +1036,10 @@
         setFreeRotation(currentFreeRotation);
       } else if (currentRotation !== 0) {
         setRotation(currentRotation);
+      }
+      // ミラー状態を復元
+      if (isMirrored) {
+        setMirror(true);
       }
     }, 100);
   }

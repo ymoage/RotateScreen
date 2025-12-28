@@ -40,6 +40,45 @@ export const HOTKEY_PRESETS = {
 // デフォルトのホットキープリセット
 export const DEFAULT_HOTKEY_PRESET = 'default';
 
+// ミラー（左右反転）用ホットキープリセット定義
+export const MIRROR_HOTKEY_PRESETS = {
+  default: {
+    id: 'default',
+    key: 'h',
+    ctrl: false,
+    alt: false,
+    shift: false,
+    description: 'Hキーのみ'
+  },
+  alt: {
+    id: 'alt',
+    key: 'h',
+    ctrl: false,
+    alt: true,
+    shift: false,
+    description: 'Alt + H'
+  },
+  ctrl: {
+    id: 'ctrl',
+    key: 'h',
+    ctrl: true,
+    alt: false,
+    shift: true,
+    description: 'Ctrl + Shift + H'
+  },
+  disabled: {
+    id: 'disabled',
+    key: null,
+    ctrl: false,
+    alt: false,
+    shift: false,
+    description: '無効'
+  }
+};
+
+// デフォルトのミラーホットキープリセット
+export const DEFAULT_MIRROR_HOTKEY_PRESET = 'default';
+
 // ストレージキー
 export const STORAGE_KEYS = {
   SETTINGS: 'settings',
@@ -65,6 +104,7 @@ export const AI_DETECTION_TIMEOUT = 10000;  // 10秒
 // デフォルト設定
 export const DEFAULT_SETTINGS = {
   hotkeyPreset: DEFAULT_HOTKEY_PRESET,
+  mirrorHotkeyPreset: DEFAULT_MIRROR_HOTKEY_PRESET,  // ミラー用ショートカット
   rememberRotation: true,
   defaultRotation: DEFAULT_ROTATION,
   resetOnVideoChange: true,  // 別の動画に切り替えたときに回転をリセット
